@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 
+import {
+  GraduationCap,
+  School,
+  BriefcaseBusiness,
+  ArrowLeft
+} from "lucide-react";
+
+import { seedDemo } from "./shared/db";
 import StudentApp from "./student";
 import CollegeApp from "./college";
 import IndustryApp from "./industry";
@@ -14,11 +22,18 @@ function MainApp() {
 
   // Dashboard open
   if (auth && role === "student") {
-    return <StudentApp />;
-  }
-
+  return (
+    <StudentApp
+      onLogout={() => {
+        setAuth(false);
+        setRole("student");
+        setIsRegister(false);
+      }}
+    />
+  );
+}
   if (auth && role === "college") {
-    return <CollegeApp onLogout={() => setAuth(false)} />;
+    return <CollegeApp />;
   }
 
   if (auth && role === "industry") {
@@ -44,6 +59,15 @@ function MainApp() {
   // Main landing page
   return (
     <div className="landing-page">
+      <button
+        style={{ position: "fixed", right: 16, bottom: 16, zIndex: 50, padding: "10px 14px" }}
+        onClick={() => {
+          seedDemo();
+          alert("Demo data loaded: 6 students, 3 jobs.");
+        }}
+      >
+        Load Demo Data
+      </button>
 
       {/* Background effects */}
       <div className="bg-orb orb-one"></div>
@@ -52,13 +76,13 @@ function MainApp() {
 
       {/* NAVBAR */}
       <nav className="navbar">
+
         <div className="brand">
-         <div className="brand-logo">
-            <span></span>
-         </div> 
-          <div className="brand-name">
-             SETU
+
+          <div className="brand-logo">
+            <span>SETU</span>
           </div>
+
         </div>
 
         <div className="nav-links">
@@ -77,6 +101,7 @@ function MainApp() {
         >
           Sign In
         </button>
+
       </nav>
 
       {/* HERO */}
@@ -176,6 +201,7 @@ function MainApp() {
       <section className="path-section">
 
         <div className="path-heading">
+
           <div>
             <h2>Choose Your Path</h2>
             <p>Select the option that best describes you.</p>
@@ -184,6 +210,7 @@ function MainApp() {
           <div className="path-badge">
             3 Stakeholders
           </div>
+
         </div>
 
         <div className="role-grid">
@@ -196,6 +223,7 @@ function MainApp() {
               setIsRegister(true);
             }}
           >
+
             <div className="role-icon">🎓</div>
 
             <div className="role-content">
@@ -208,6 +236,7 @@ function MainApp() {
             <div className="role-arrow">→</div>
 
             <div className="card-glow"></div>
+
           </button>
 
           {/* COLLEGE */}
@@ -218,6 +247,7 @@ function MainApp() {
               setIsRegister(true);
             }}
           >
+
             <div className="role-icon">🏫</div>
 
             <div className="role-content">
@@ -230,6 +260,7 @@ function MainApp() {
             <div className="role-arrow">→</div>
 
             <div className="card-glow"></div>
+
           </button>
 
           {/* INDUSTRY */}
@@ -240,6 +271,7 @@ function MainApp() {
               setIsRegister(false);
             }}
           >
+
             <div className="role-icon">💼</div>
 
             <div className="role-content">
@@ -252,6 +284,7 @@ function MainApp() {
             <div className="role-arrow">→</div>
 
             <div className="card-glow"></div>
+
           </button>
 
         </div>
@@ -261,7 +294,9 @@ function MainApp() {
       {/* WHY SECTION */}
       <section className="why-section">
 
-        <h2>Why Choose <span>Setu?</span></h2>
+        <h2>
+          Why Choose <span>SETU?</span>
+        </h2>
 
         <div className="feature-grid">
 
@@ -307,15 +342,12 @@ function MainApp() {
 
       {/* FOOTER */}
       <footer>
-        <div className="footer-brand">
-          <div className="brand-logo small">
-            <span>I</span>
-            <span>C</span>
-          </div>
 
-          <strong>
-            Industry<span>Connect</span>
-          </strong>
+        <div className="footer-brand">
+
+          <div className="brand-logo small">
+            <span>SETU</span>
+          </div>
         </div>
 
         <p>
@@ -323,8 +355,9 @@ function MainApp() {
         </p>
 
         <p className="copyright">
-          © 2023 Setu. All rights reserved.
+          © 2026 SETU. All rights reserved.
         </p>
+
       </footer>
 
     </div>
@@ -341,6 +374,7 @@ function AuthScreen({
   onBack,
   onSuccess
 }) {
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -349,66 +383,85 @@ function AuthScreen({
   });
 
   const roleData = {
+
     student: {
       title: "Student Login",
       subtitle: "Find your dream opportunities",
-      icon: "🎓",
+      icon: GraduationCap,
       color: "student-auth"
     },
 
     college: {
       title: "College Login",
       subtitle: "Manage placements with ease",
-      icon: "🏫",
+      icon: School,
       color: "college-auth"
     },
 
     industry: {
       title: "Industry Login",
       subtitle: "Hire the right talent",
-      icon: "💼",
+      icon: BriefcaseBusiness,
       color: "industry-auth"
     }
+
   };
 
   const data = roleData[role];
+  const Icon = data.icon;
 
   const change = (e) => {
+
     setForm({
       ...form,
       [e.target.name]: e.target.value
     });
+
   };
 
   const submit = (e) => {
+
     e.preventDefault();
 
     if (!form.email || !form.password) {
+
       alert("Please enter email and password.");
       return;
+
     }
 
     if (isRegister) {
+
       if (!form.name) {
+
         alert("Please enter your name.");
         return;
+
       }
 
       if (form.password !== form.confirmPassword) {
+
         alert("Passwords do not match.");
         return;
+
       }
+
     }
 
     onSuccess();
+
   };
 
   return (
+
     <div className={`auth-page ${data.color}`}>
 
       <div className="auth-background"></div>
 
-      <button className="auth-back" onClick={onBack}>
+      <button
+        className="auth-back"
+        onClick={onBack}
+      >
         ← Back
       </button>
 
@@ -419,17 +472,19 @@ function AuthScreen({
 
           <div className="big-logo">
             <span>SETU</span>
-            
           </div>
-
-          {/* <h1>
-            Industry<span>Connect</span>
+{/* 
+          <h1>
+            SETU
           </h1> */}
 
-          <p>Learn&nbsp; • &nbsp;Connect&nbsp; • &nbsp;Grow</p>
+          <p>
+            Learn&nbsp; • &nbsp;Connect&nbsp; • &nbsp;Grow
+          </p>
 
           <div className="auth-illustration">
-            {data.icon}
+           {/*  {data.icon} */}
+            <Icon size={100} strokeWidth={1.5} />
           </div>
 
           <h3>
@@ -440,27 +495,35 @@ function AuthScreen({
 
         </div>
 
+
         {/* RIGHT */}
         <div className="auth-form-side">
 
           <div className="auth-role-icon">
-            {data.icon}
+            {/* {data.icon} */}
+             <Icon size={70} strokeWidth={1.8} />
           </div>
 
           <h2>
-            {isRegister ? "Create Your Account" : "Welcome Back"}
+            {isRegister
+              ? "Create Your Account"
+              : "Welcome Back"}
           </h2>
 
           <p className="auth-subtitle">
+
             {isRegister
-              ? "Get started and be a part of Setu."
+              ? "Get started and be a part of SETU."
               : `Sign in to continue to your ${role} dashboard.`}
+
           </p>
 
           <form onSubmit={submit}>
 
             {isRegister && (
+
               <div className="input-box">
+
                 <span>👤</span>
 
                 <input
@@ -475,10 +538,14 @@ function AuthScreen({
                   value={form.name}
                   onChange={change}
                 />
+
               </div>
+
             )}
 
+
             <div className="input-box">
+
               <span>✉</span>
 
               <input
@@ -488,9 +555,12 @@ function AuthScreen({
                 value={form.email}
                 onChange={change}
               />
+
             </div>
 
+
             <div className="input-box">
+
               <span>🔒</span>
 
               <input
@@ -500,10 +570,14 @@ function AuthScreen({
                 value={form.password}
                 onChange={change}
               />
+
             </div>
 
+
             {isRegister && (
+
               <div className="input-box">
+
                 <span>🔐</span>
 
                 <input
@@ -513,11 +587,16 @@ function AuthScreen({
                   value={form.confirmPassword}
                   onChange={change}
                 />
+
               </div>
+
             )}
 
+
             {!isRegister && (
+
               <div className="remember-row">
+
                 <label>
                   <input type="checkbox" />
                   Remember me
@@ -527,54 +606,85 @@ function AuthScreen({
                   type="button"
                   className="forgot"
                   onClick={() =>
-                    alert("Password reset feature can be connected later.")
+                    alert(
+                      "Password reset feature can be connected later."
+                    )
                   }
                 >
                   Forgot password?
                 </button>
+
               </div>
+
             )}
 
-            <button className="login-button" type="submit">
+
+            <button
+              className="login-button"
+              type="submit"
+            >
+
               {isRegister ? "Sign Up" : "Login"}
+
               <span>→</span>
+
             </button>
 
           </form>
 
+
           {role !== "industry" && (
+
             <div className="switch-text">
+
               {isRegister
                 ? "Already have an account?"
                 : "Don't have an account?"}
 
               <button
-                onClick={() => setIsRegister(!isRegister)}
+                onClick={() =>
+                  setIsRegister(!isRegister)
+                }
               >
                 {isRegister ? "Login" : "Sign Up"}
               </button>
+
             </div>
+
           )}
 
+
           {role === "industry" && (
+
             <div className="industry-message">
+
               Industry accounts are created after
               college approval/invitation.
+
             </div>
+
           )}
 
         </div>
 
       </div>
+
     </div>
+
   );
 }
 
 
 /* FEATURE COMPONENT */
 
-function Feature({ icon, title, text }) {
+function Feature({
+  icon,
+  title,
+  text
+}) {
+
   return (
+
     <div className="feature-card">
 
       <div className="feature-icon">
@@ -586,7 +696,9 @@ function Feature({ icon, title, text }) {
       <p>{text}</p>
 
     </div>
+
   );
+
 }
 
 
