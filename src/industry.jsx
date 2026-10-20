@@ -50,45 +50,6 @@ function IndustryApp({ onLogout }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
-  // STEP 4: same-browser cross-portal refresh for Student -> Industry actions.
-  useEffect(() => {
-    const refreshFromStudent = () => {
-      try {
-        const student = JSON.parse(localStorage.getItem("SetuStudent") || "null");
-        if (!student) return;
-        const studentApps = Array.isArray(student.applications) ? student.applications : [];
-        const profile = student.profile || {};
-        const derived = studentApps.map((app) => {
-          const job = data.jobs.find((item) => String(item.id) === String(app.jobId));
-          return {
-            id: `student-${app.id}`,
-            student: app.student || profile.name || "Student",
-            email: app.email || profile.email || "",
-            jobId: app.jobId,
-            job: app.jobTitle || job?.title || "Job",
-            company: app.company || job?.company || data.company.name || "Company",
-            appliedDate: app.appliedDate || "",
-            status: app.status || "Applied",
-            skills: Array.isArray(student.skills) ? student.skills.filter((x) => x.verified).map((x) => x.name) : [],
-          };
-        });
-        setData((prev) => {
-          const map = new Map((prev.applications || []).map((item) => [String(item.id), item]));
-          derived.forEach((item) => {
-            const existing = map.get(String(item.id));
-            map.set(String(item.id), existing ? { ...existing, ...item, status: item.status } : item);
-          });
-          const merged = [...map.values()];
-          if (JSON.stringify(merged) === JSON.stringify(prev.applications)) return prev;
-          return { ...prev, applications: merged };
-        });
-      } catch {}
-    };
-    refreshFromStudent();
-    const interval = window.setInterval(refreshFromStudent, 1000);
-    return () => window.clearInterval(interval);
-  }, [data.jobs, data.company.name]);
-
   const showMessage = (message) => {
     setNotification(message);
     window.clearTimeout(showMessage.timer);
@@ -130,7 +91,6 @@ function IndustryApp({ onLogout }) {
       skills: jobForm.skills.split(",").map((s) => s.trim()).filter(Boolean),
       description: jobForm.description.trim(),
       package: jobForm.package.trim(),
-      company: data.company.name || "Company",
       createdAt: new Date().toLocaleDateString(),
     };
     setField("jobs", [job, ...data.jobs]);
@@ -215,16 +175,6 @@ function IndustryApp({ onLogout }) {
       status: "Scheduled",
     };
     setField("interviews", [interview, ...data.interviews]);
-    try {
-      const studentData = JSON.parse(localStorage.getItem("SetuStudent") || "null");
-      if (studentData) {
-        studentData.interviews = Array.isArray(studentData.interviews) ? [
-          { id: interview.id, company: data.company.name || "Company", role: application.job, date: interview.date, time: "10:00 AM", round: interview.round, mode: "Online", status: "Scheduled" },
-          ...studentData.interviews
-        ] : [interview];
-        localStorage.setItem("SetuStudent", JSON.stringify(studentData));
-      }
-    } catch {}
     updateApplicationStatus(application.id, "Interview Scheduled");
     showMessage("Interview scheduled.");
   };
@@ -239,16 +189,6 @@ function IndustryApp({ onLogout }) {
       date: new Date().toLocaleDateString(),
     };
     setField("selections", [selection, ...data.selections]);
-    try {
-      const studentData = JSON.parse(localStorage.getItem("SetuStudent") || "null");
-      if (studentData) {
-        studentData.selections = Array.isArray(studentData.selections) ? [
-          { id: selection.id, company: data.company.name || "Company", role: selection.role, package: selection.package, date: selection.date },
-          ...studentData.selections
-        ] : [selection];
-        localStorage.setItem("SetuStudent", JSON.stringify(studentData));
-      }
-    } catch {}
     updateApplicationStatus(application.id, "Selected");
     showMessage("Candidate selected.");
   };
