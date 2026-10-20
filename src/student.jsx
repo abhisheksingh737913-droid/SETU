@@ -1,7 +1,7 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./student.css";
+
 
 /* =========================================================
    STUDENT DASHBOARD
@@ -1108,58 +1108,47 @@ function Profile({ profile, updateProfile }) {
             <div className="form-grid">
 
               <InputField
-                label="Full Name"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-              />
+                   label="Course Name"
+                       name="course"
+                    value={form.course}
+                    onChange={handleChange}
+                    placeholder="Enter course name"
+                     />
 
               <InputField
-                label="College"
-                name="college"
-                value={form.college}
-                onChange={handleChange}
-                placeholder="Enter college name"
-              />
+                  label="Branch / Department"
+                   name="branch"
+                   value={form.branch}
+                    onChange={handleChange}
+                     placeholder="Enter branch or department"
+                    />
 
               <InputField
-                label="Course Name"
-                name="course"
-                value={form.course}
-                onChange={handleChange}
-                placeholder="e.g. B.Tech"
-              />
+  label="Semester"
+  name="semester"
+  value={form.semester}
+  onChange={handleChange}
+  placeholder="Enter semester"
+/>
 
-              <InputField
-                label="Branch / Department"
-                name="branch"
-                value={form.branch}
-                onChange={handleChange}
-                placeholder="e.g. CSE"
-              />
+<div className="input-group">
+  <label>CGPA</label>
 
-              <InputField
-                label="Semester"
-                name="semester"
-                value={form.semester}
-                onChange={handleChange}
-                placeholder="e.g. 5"
-              />
+  <input
+    type="number"
+    name="cgpa"
+    value={form.cgpa || ""}
+    onChange={handleChange}
+    placeholder="Enter CGPA"
+    min="0"
+    max="10"
+    step="0.01"
+  />
 
-              <div className="input-group">
-                <label>CGPA</label>
-                <input
-                  type="number"
-                  name="cgpa"
-                  value={form.cgpa || ""}
-                  onChange={handleChange}
-                  placeholder="Enter CGPA (0-10)"
-                  min="0"
-                  max="10"
-                  step="0.01"
-                />
-              </div>
+  <small style={{ color: "#64748b", marginTop: "6px", display: "block" }}>
+    Enter your CGPA between 0 and 10
+  </small>
+</div>
 
             </div>
 
